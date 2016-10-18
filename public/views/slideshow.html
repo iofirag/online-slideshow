@@ -1,0 +1,6 @@
+<section ng-init="init()">
+	<div class="loadingContainer">
+		<img class="loading" ng-show="currImg.url == '' " ng-src="http://www.catharsiscollective.com/wp-content/plugins/advanced-ajax-page-loader/loaders/Teddy%20Bear%20Loading.gif"/>
+	</div>
+	<img class="bg" ng-show="currImg.url != '' " ng-src="{{currImg.url}}"/>
+</section>

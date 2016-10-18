@@ -1,0 +1,15 @@
+<article class="id-search-box">
+	<main class="form-group id-search-box-width">
+		<h2 class="searchBoxTitle">PICA</h2>
+		<section class="searchBoxWrapper">
+			<input  type="text" ng-model="vars.searchString" ng-keypress="runScript($event)" placeholder="Gallery ID" class="searchBox form-control" />
+			<button class="searchBtn" ng-click="search()">S</button>
+		</section>
+		<div class="alert alert-danger fade" ng-class="found=='not_found'? 'in':''">
+			<strong>Error:</strong> "{{notFoundSearchString}}" not found
+		</div>
+		<div class="alert alert-success fade" ng-class="found=='found'? 'in':''">
+	    	<strong>Success!</strong> Redirect you to the slide show..
+	  	</div>
+	</main>
+</article>
