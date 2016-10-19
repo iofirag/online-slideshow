@@ -145,16 +145,27 @@ app.controller('slideshowCtrl', ['$scope','$interval','$http','$rootScope','$loc
 				if ( data.key.indexOf('-')!=0 ) return;
 
 				// Add new picture data in map
+				debugger
 				$scope.picturesMap[data.key] = data.val();
+				debugger;
 				console.log('child has added='+data.key)
+				// $scope.$apply()
 			});
 			eventRef.on('child_changed', function(data) {
 				// Change this data in map by the exist key // maybe check for exist key for safe
-				$scope.picturesMap[data.key] = data.val();
+				debugger;
+				if (data.key=='pictures'){
+					$scope.picturesMap = data.val();
+				}
+				// else{
+				// 	$scope.picturesMap[data.key] = data.val();
+				// }
 				console.log('child_Changed', data.val() );
+				debugger
+				// $scope.$apply()
 			});
 			eventRef.on('child_removed', function(dataDel) {				
-				if ( data.key.indexOf('-')!=0 ) return;
+				if ( data.key.indexOf('-') != 0 ) return;
 
 				//check if this is current image AND there is more picture
 				// Detect if it's current show
@@ -168,6 +179,7 @@ app.controller('slideshowCtrl', ['$scope','$interval','$http','$rootScope','$loc
 				}
 				// Remove deleted pic key from map
 				delete $scope.picturesMap[dataDel.key];
+				// $scope.$apply()
 			});
 		}
 		$scope.startInterval = ()=>{
@@ -178,16 +190,18 @@ app.controller('slideshowCtrl', ['$scope','$interval','$http','$rootScope','$loc
 				$scope.intervalFunction()
 				$scope.interval = setInterval(()=>{
 					$scope.intervalFunction();
-				}, 3000);
+				}, 10000);
 			}
 		}
 		$scope.stopInterval = ()=>{
 			$scope.interval = null;
+			$scope.$apply()
 		}
 		$scope.intervalFunction = ()=>{
 			$scope.getNextIndexToShow();
 			var imgDataToShow = $scope.picturesMap[ $scope.currImg.key ];
 			$scope.currImg.url = imgDataToShow.dataUrl;
+			console.log('$scope.currImg.url='+$scope.currImg.url)
 			$scope.$apply()
 		}
 		$scope.getNextIndexToShow = ()=>{
@@ -201,6 +215,7 @@ app.controller('slideshowCtrl', ['$scope','$interval','$http','$rootScope','$loc
 				// Start from the beginning
 				$scope.currImg.key = Object.keys($scope.picturesMap)[0];
 			}
+			$scope.$apply()
 		}
 
 
