@@ -103,7 +103,7 @@ app.controller('slideshowCtrl', ['$scope','$interval','$http','$rootScope','$loc
 		// $scope.currImgIndex = 'not_init';
 		//$scope.pictureKeysList = [];
 		$scope.picturesMap = {};
-		
+		var stop;
 
 		$scope.init = ()=>{
 			
@@ -132,12 +132,12 @@ app.controller('slideshowCtrl', ['$scope','$interval','$http','$rootScope','$loc
 
 				var userEvent = snapshot.val();
 				$scope.picturesMap = userEvent.pictures;
-				//console.log('$scope.picturesMap=',$scope.picturesMap)
+				// console.log('$scope.picturesMap=',$scope.picturesMap)
 				if ( Object.keys($scope.picturesMap).length){
-					$scope.startInterval();
-					console.log('id valid')
+					$scope.startSlideShow();
+					//console.log('id valid')
 				}
-				console.log('$scope.loading='+$scope.loading)
+				//console.log('$scope.loading='+$scope.loading)
 			});
 
 
@@ -147,8 +147,8 @@ app.controller('slideshowCtrl', ['$scope','$interval','$http','$rootScope','$loc
 				// Add new picture data in map
 				debugger
 				$scope.picturesMap[data.key] = data.val();
-				debugger;
 				console.log('child has added='+data.key)
+				debugger
 				// $scope.$apply()
 			});
 			eventRef.on('child_changed', function(data) {
@@ -162,7 +162,6 @@ app.controller('slideshowCtrl', ['$scope','$interval','$http','$rootScope','$loc
 				// }
 				console.log('child_Changed', data.val() );
 				debugger
-				// $scope.$apply()
 			});
 			eventRef.on('child_removed', function(dataDel) {				
 				if ( data.key.indexOf('-') != 0 ) return;
@@ -171,38 +170,41 @@ app.controller('slideshowCtrl', ['$scope','$interval','$http','$rootScope','$loc
 				// Detect if it's current show
 				if ($scope.currImg.key == dataDel.key){
 					// Change picture
-					$scope.stopInterval();
+					$scope.stopSlideShow();
 					// $scope.intervalFunction();
-					$scope.startInterval();
+					$scope.startSlideShow();
 				}else{
 					// delete another img
 				}
 				// Remove deleted pic key from map
 				delete $scope.picturesMap[dataDel.key];
-				// $scope.$apply()
 			});
 		}
-		$scope.startInterval = ()=>{
+		$scope.startSlideShow = ()=>{
+			// Don't start a new fight if we are already fighting
+          	if ( angular.isDefined(stop) ) return;
+
 			// Remove loading image
 			$scope.loading = false
 			// Start the interval to show
 			if (Object.keys($scope.picturesMap).length >0){
 				$scope.intervalFunction()
-				$scope.interval = setInterval(()=>{
+				stop = $interval(()=>{
 					$scope.intervalFunction();
 				}, 10000);
 			}
 		}
-		$scope.stopInterval = ()=>{
-			$scope.interval = null;
-			$scope.$apply()
+		$scope.stopSlideShow = ()=>{
+			if (angular.isDefined(stop)) {
+	        	$interval.cancel(stop);
+	        	stop = undefined;
+	        }
 		}
 		$scope.intervalFunction = ()=>{
 			$scope.getNextIndexToShow();
 			var imgDataToShow = $scope.picturesMap[ $scope.currImg.key ];
 			$scope.currImg.url = imgDataToShow.dataUrl;
-			console.log('$scope.currImg.url='+$scope.currImg.url)
-			$scope.$apply()
+			// console.log('$scope.currImg.url='+$scope.currImg.url)
 		}
 		$scope.getNextIndexToShow = ()=>{
 			var pictureKeysList = Object.keys($scope.picturesMap)
@@ -215,9 +217,11 @@ app.controller('slideshowCtrl', ['$scope','$interval','$http','$rootScope','$loc
 				// Start from the beginning
 				$scope.currImg.key = Object.keys($scope.picturesMap)[0];
 			}
-			$scope.$apply()
 		}
-
+		$scope.$on('$destroy', function() {
+          // Make sure that the interval is destroyed too
+          $scope.stopSlideShow();
+        });
 
 		// $scope.initArrayPrototype = ()=>{
 		// 	Array.prototype.indexOf || (Array.prototype.indexOf = function(d, e) {
