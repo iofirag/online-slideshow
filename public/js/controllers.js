@@ -13,7 +13,7 @@ app.controller('searchCtrl', ['$scope', '$http','$rootScope','$state','$localSto
 
 		//$scope.found = 'wait'
 		$scope.runScript = (e)=>{
-			//$scope.found = 'wait';
+			// $scope.found = 'wait';
 		    //$scope.notFoundSearchString = '';
 		    if (e.keyCode == 13) {
 		    	$scope.search()
@@ -36,7 +36,13 @@ app.controller('searchCtrl', ['$scope', '$http','$rootScope','$state','$localSto
 						var albumList = snapshot.val();
 						if (!albumList) {
 							// not found
+							$scope.found = 'not_found'
+							$scope.msg = 'ID "'+find+'" not found'
+							$scope.$apply()
 						} else {
+							$scope.found = 'found'
+							$scope.$apply()
+							
 							// add every object included at the result in the reslultList obj
 							if (!$rootScope.vars.resultList.hasOwnProperty(snapshot.key)){
 								console.log(snapshot.val())
@@ -49,6 +55,9 @@ app.controller('searchCtrl', ['$scope', '$http','$rootScope','$state','$localSto
 				}
 			}catch(ex){
 				// id not valid
+				$scope.found = 'not_found'
+				$scope.msg = '"'+find+'" not a valid ID'
+				$scope.$apply()
 			}
 			
 			// -by value
@@ -59,7 +68,13 @@ app.controller('searchCtrl', ['$scope', '$http','$rootScope','$state','$localSto
 				var albumList = snapshot.val();
 				if (!albumList) {
 					// not found
+					$scope.found = 'not_found'
+					$scope.msg = '"'+find+'" not found'
+					$scope.$apply()
 				} else {
+					$scope.found = 'found'
+					$scope.$apply()
+
 					var resKeys = Object.keys(albumList)
 					for (var i in resKeys){
 						// add every object included at the result in the reslultList obj
@@ -75,7 +90,13 @@ app.controller('searchCtrl', ['$scope', '$http','$rootScope','$state','$localSto
 				var albumList = snapshot.val();
 				if (!albumList) {
 					// not found
+					$scope.found = 'not_found'
+					$scope.msg = '"'+find+'" not found'
+					$scope.$apply()
 				} else {
+					$scope.found = 'found'
+					$scope.$apply()
+
 					var resKeys = Object.keys(snapshot.val())
 					for (var i in resKeys){
 						// add every object included at the result in the reslultList obj
@@ -85,7 +106,6 @@ app.controller('searchCtrl', ['$scope', '$http','$rootScope','$state','$localSto
 					}
 				} 
 			});
-
 		}
 	}
 ])

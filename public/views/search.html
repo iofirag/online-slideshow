@@ -6,7 +6,7 @@
 			<button class="searchBtn" ng-click="search()">S</button>
 		</section>
 		<div class="alert alert-danger fade" ng-class="found=='not_found'? 'in':''">
-			<strong>Error:</strong> "{{notFoundSearchString}}" not found
+			<strong>Error:</strong> {{msg}}
 		</div>
 		<div class="alert alert-success fade" ng-class="found=='found'? 'in':''">
 	    	<strong>Success!</strong> Redirect you to the slide show..
